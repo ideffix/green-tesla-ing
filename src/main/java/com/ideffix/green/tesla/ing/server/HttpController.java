@@ -25,13 +25,16 @@ public abstract class HttpController<Request, Response> implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        if (!"POST".equals(exchange.getRequestMethod())) {
-            throw new RuntimeException("Only POST HTTP methods are supported!");
+        try {
+            if (!"POST".equals(exchange.getRequestMethod())) {
+                throw new RuntimeException("Only POST HTTP methods are supported!");
+            }
+            Request request = readRequest(exchange);
+            Response response = execute(request);
+            writeResponse(exchange, response);
+        } catch (Exception e) {
+            writeErrorResponse(exchange, e);
         }
-
-        Request request = readRequest(exchange);
-        Response response = execute(request);
-        writeResponse(exchange, response);
     }
 
     private Request readRequest(HttpExchange exchange) throws IOException {
@@ -43,6 +46,14 @@ public abstract class HttpController<Request, Response> implements HttpHandler {
         OutputStream outputStream = exchange.getResponseBody();
         exchange.sendResponseHeaders(200, stringResponse.length());
         outputStream.write(stringResponse.getBytes(StandardCharsets.UTF_8));
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    private void writeErrorResponse(HttpExchange exchange, Exception e) throws IOException {
+        OutputStream outputStream = exchange.getResponseBody();
+        exchange.sendResponseHeaders(500, e.getMessage().length());
+        outputStream.write(e.getMessage().getBytes(StandardCharsets.UTF_8));
         outputStream.flush();
         outputStream.close();
     }
