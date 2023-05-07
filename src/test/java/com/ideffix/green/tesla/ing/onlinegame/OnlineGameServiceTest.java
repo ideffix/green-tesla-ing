@@ -25,7 +25,7 @@ class OnlineGameServiceTest {
     }
 
     @Test
-    public void executionTime() {
+    public void performanceTest() {
         Players input = InputDataGenerator.generate(1000, 20_000, new Range(1, 1000), new Range(1, 100_00));
 
         Tester tester = new Tester(() -> onlineGameService.calculateOrder(input), 10);

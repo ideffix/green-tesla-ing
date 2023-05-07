@@ -33,7 +33,6 @@ public class Tester {
         if (withPrint) {
             print(stats);
         }
-
         return stats;
     }
 
@@ -43,6 +42,5 @@ public class Tester {
         System.out.println("Min execution time: " + stats.getMin() + " ms");
         System.out.println("Max execution time: " + stats.getMax() + " ms");
     }
-
 
 }

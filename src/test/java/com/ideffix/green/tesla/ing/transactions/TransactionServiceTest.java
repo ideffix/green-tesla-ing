@@ -2,6 +2,8 @@ package com.ideffix.green.tesla.ing.transactions;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.ideffix.green.tesla.ing.tests.Json;
+import com.ideffix.green.tesla.ing.tests.Range;
+import com.ideffix.green.tesla.ing.tests.Tester;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,6 +22,14 @@ class TransactionServiceTest {
         List<AccountRecord> output = transactionService.executeReport(input);
 
         assertArrayEquals(expected.toArray(), output.toArray());
+    }
+
+    @Test
+    public void performanceTest() {
+        List<Transaction> input = InputDataGenerator.generate(1_000_000);
+
+        Tester tester = new Tester(() -> transactionService.executeReport(input), 10);
+        tester.run(/* withPrint=*/true);
     }
 
 }

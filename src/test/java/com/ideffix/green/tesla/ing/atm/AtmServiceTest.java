@@ -2,6 +2,8 @@ package com.ideffix.green.tesla.ing.atm;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.ideffix.green.tesla.ing.tests.Json;
+import com.ideffix.green.tesla.ing.tests.Range;
+import com.ideffix.green.tesla.ing.tests.Tester;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -31,6 +33,14 @@ class AtmServiceTest {
         List<ATM> output = atmService.calculateOrder(input);
 
         assertArrayEquals(expected.toArray(), output.toArray());
+    }
+
+    @Test
+    public void performanceTest() {
+        List<Task> input = InputDataGenerator.generate(1_000_000, new Range(0, 10_000), new Range(0, 100));
+
+        Tester tester = new Tester(() -> atmService.calculateOrder(input), 10);
+        tester.run(/* withPrint=*/true);
     }
 
 }
