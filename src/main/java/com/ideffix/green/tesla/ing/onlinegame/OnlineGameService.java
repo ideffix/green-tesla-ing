@@ -1,9 +1,6 @@
 package com.ideffix.green.tesla.ing.onlinegame;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OnlineGameService {
 
@@ -15,31 +12,36 @@ public class OnlineGameService {
             return result;
         }
 
-        Map<Integer, Integer> groupSizeMap = new HashMap<>();
-
+        Map<Integer, Integer> groupCountMap = new HashMap<>();
         result.add(new ArrayList<>());
 
         for (Clan clan : players.clans()) {
-            for (int i = 0; i < result.size(); i++) {
-                List<Clan> group = result.get(i);
-                int playersCountSoFar = groupSizeMap.getOrDefault(i, 0);
-                int playersCountTogether = playersCountSoFar + clan.numberOfPlayers();
-                if (playersCountTogether <= players.groupCount()) {
-                    groupSizeMap.put(i, playersCountTogether);
-                    group.add(clan);
-                    break;
-                }
-                boolean isLast = i == result.size() - 1;
-                if (isLast) {
-                    List<Clan> newGroup = new ArrayList<>();
-                    newGroup.add(clan);
-                    groupSizeMap.put(i+1, clan.numberOfPlayers());
-                    result.add(newGroup);
-                    break;
-                }
+            int fittingGroupIndex = findFittingGroupIndex(result, groupCountMap, clan, players.groupCount());
+            if (fittingGroupIndex >= 0) {
+                // Clan can be added to an existing group
+                groupCountMap.put(fittingGroupIndex, groupCountMap.getOrDefault(fittingGroupIndex, 0) + clan.numberOfPlayers());
+                result.get(fittingGroupIndex).add(clan);
+            } else {
+                // Cannot add current clan to an existing groups - create new one.
+                List<Clan> newGroup = new ArrayList<>();
+                newGroup.add(clan);
+                groupCountMap.put(result.size(), clan.numberOfPlayers());
+                result.add(newGroup);
             }
         }
 
         return result;
+    }
+
+    private Integer findFittingGroupIndex(List<List<Clan>> groupsSoFar, Map<Integer, Integer> groupCountMap, Clan clan, int groupCount) {
+        for (int i = 0; i < groupsSoFar.size(); i++) {
+            int playersInGroup = groupCountMap.getOrDefault(i, 0);
+            int playersWithCurrentClan = playersInGroup + clan.numberOfPlayers();
+            boolean canClanFitIntoGroup = playersWithCurrentClan <= groupCount;
+            if (canClanFitIntoGroup) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
