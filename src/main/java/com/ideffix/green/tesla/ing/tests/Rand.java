@@ -1,5 +1,8 @@
 package com.ideffix.green.tesla.ing.tests;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Rand {
 
     public static int randomInt(Range range) {
@@ -7,7 +10,8 @@ public class Rand {
     }
 
     public static float randomFloat(Range range) {
-        return (float)((Math.random() * (range.max() + 1 - range.min())) + range.min());
+        float f = (float)((Math.random() * (range.max() + 1 - range.min())) + range.min());
+        return new BigDecimal(f).setScale(2,  RoundingMode.FLOOR).floatValue();
     }
 
     public static char randomChar(Range range) {
