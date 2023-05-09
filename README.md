@@ -6,7 +6,7 @@ Repozytorium zostało stworzone na potrzeby [konkursu](https://www.ing.pl/pionte
 - Maven
 - Jackson
 - JUnit
-- codeql (statyczna analiza kodu)
+- [CodeQL](https://github.com/ideffix/green-tesla-ing/actions/workflows/codeql.yml) (statyczna analiza kodu)
 
 ## Podejście do problemu
 Ideą konkursu jest to, aby napisany przez programistę kod był przyjazny ekologii. Stąd też oprócz efektywnego wykonania logiki zadań, zdecydowałem się wprowadzić poniższe usprawnienia:
