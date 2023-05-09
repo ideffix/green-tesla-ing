@@ -57,3 +57,11 @@ jobs:
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:${{matrix.language}}"
+        output: reports/codeql-${{ matrix.language }}.sarif
+    - name: Commit and push reports
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "github-actions@users.noreply.github.com"
+        git add reports/**
+        git commit -m "Update CodeQL reports [skip ci]" || echo "No changes to commit"
+        git push || echo "No changes to push"
