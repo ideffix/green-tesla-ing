@@ -14,6 +14,7 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
         head.next = tail;
         head.skippableNext = tail;
         tail.prev = head;
+        tail.skippablePrev = head;
     }
 
     @Override
@@ -23,12 +24,12 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
 
             @Override
             public boolean hasNext() {
-                return current.next != tail;
+                return current.skippableNext != tail;
             }
 
             @Override
             public Node<T> next() {
-                Node<T> next = current.next;
+                Node<T> next = current.skippableNext;
                 current = next;
                 return next;
             }
@@ -37,14 +38,17 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
 
     public void add(T element) {
         Node<T> currentLast = tail.prev;
+        Node<T> currentSkippableLast = tail.skippablePrev;
         Node<T> node = new Node<>(element);
 
         currentLast.next = node;
-        currentLast.skippableNext = node;
+        currentSkippableLast.skippableNext = node;
         node.prev = currentLast;
         node.next = tail;
         node.skippableNext = tail;
+        node.skippablePrev = currentSkippableLast;
         tail.prev = node;
+        tail.skippablePrev = node;
     }
 
     public List<T> toList() {
@@ -73,6 +77,7 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
         Node<T> next;
         Node<T> prev;
         Node<T> skippableNext;
+        Node<T> skippablePrev;
         T value;
 
         Node() {
@@ -83,7 +88,8 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
         }
 
         public void skip() {
-            prev.skippableNext = skippableNext;
+            skippablePrev.skippableNext = skippableNext;
+            skippableNext.skippablePrev = skippablePrev;
         }
     }
 }
