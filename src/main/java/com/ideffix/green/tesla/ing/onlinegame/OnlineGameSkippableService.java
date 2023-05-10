@@ -12,7 +12,7 @@ public class OnlineGameSkippableService {
             return new ArrayList<>();
         }
 
-        Map<List<Clan>, Integer> groupCountMap = new HashMap<>();
+        Map<Integer, Integer> groupCountMap = new HashMap<>();
         result.add(new ArrayList<>());
 
         for (Clan clan : players.clans()) {
@@ -22,17 +22,17 @@ public class OnlineGameSkippableService {
                 // Clan can be added to an existing group
                 node = optionalNode.get();
                 List<Clan> group = node.getValue();
-                int newGroupCount = groupCountMap.getOrDefault(group, 0) + clan.numberOfPlayers();
-                groupCountMap.put(group, newGroupCount);
+                int newGroupCount = groupCountMap.getOrDefault(node.getIndex(), 0) + clan.numberOfPlayers();
+                groupCountMap.put(node.getIndex(), newGroupCount);
                 group.add(clan);
             } else {
                 // Cannot add current clan to an existing groups - create new one.
                 List<Clan> group = new ArrayList<>();
                 group.add(clan);
-                groupCountMap.put(group, clan.numberOfPlayers());
                 node = result.add(group);
+                groupCountMap.put(node.getIndex(), clan.numberOfPlayers());
             }
-            int groupCount = groupCountMap.getOrDefault(node.getValue(), 0) + clan.numberOfPlayers();
+            int groupCount = groupCountMap.getOrDefault(node.getIndex(), 0);
             // group is full, no need to iterate over it as it cannot get more clans
             if (groupCount == players.groupCount()) {
                 node.skip();
@@ -42,9 +42,9 @@ public class OnlineGameSkippableService {
         return result.toList();
     }
 
-    private Optional<SkippableLinkedList.Node<List<Clan>>> findFittingGroupNode(SkippableLinkedList<List<Clan>> groupsSoFar, Map<List<Clan>, Integer> groupCountMap, Clan clan, int groupCount) {
+    private Optional<SkippableLinkedList.Node<List<Clan>>> findFittingGroupNode(SkippableLinkedList<List<Clan>> groupsSoFar, Map<Integer, Integer> groupCountMap, Clan clan, int groupCount) {
         for (SkippableLinkedList.Node<List<Clan>> group : groupsSoFar) {
-            int playersInGroup = groupCountMap.getOrDefault(group.getValue(), 0);
+            int playersInGroup = groupCountMap.getOrDefault(group.getIndex(), 0);
             int playersWithCurrentClan = playersInGroup + clan.numberOfPlayers();
             boolean canClanFitIntoGroup = playersWithCurrentClan <= groupCount;
             if (canClanFitIntoGroup) {

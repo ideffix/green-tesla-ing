@@ -5,12 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node<T>> {
-    Node<T> head;
-    Node<T> tail;
+    private final Node<T> head;
+    private final Node<T> tail;
+    private int size = 0;
+
 
     public SkippableLinkedList() {
-        this.head = new Node<>();
-        this.tail = new Node<>();
+        this.head = new Node<>(-1);
+        this.tail = new Node<>(-1);
         head.next = tail;
         head.skippableNext = tail;
         tail.prev = head;
@@ -39,7 +41,7 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
     public Node<T> add(T element) {
         Node<T> currentLast = tail.prev;
         Node<T> currentSkippableLast = tail.skippablePrev;
-        Node<T> node = new Node<>(element);
+        Node<T> node = new Node<>(element, size++);
 
         currentLast.next = node;
         currentSkippableLast.skippableNext = node;
@@ -81,11 +83,14 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
         private Node<T> skippableNext;
         private Node<T> skippablePrev;
         private T value;
+        private final int index;
 
-        Node() {
+        Node(int index) {
+            this.index = index;
         }
 
-        public Node(T value) {
+        public Node(T value, int index) {
+            this(index);
             this.value = value;
         }
 
@@ -96,6 +101,10 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
 
         public T getValue() {
             return value;
+        }
+
+        public int getIndex() {
+            return index;
         }
     }
 }
