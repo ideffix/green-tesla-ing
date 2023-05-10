@@ -2,7 +2,6 @@ package com.ideffix.green.tesla.ing.transactions;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.ideffix.green.tesla.ing.tests.Json;
-import com.ideffix.green.tesla.ing.tests.Range;
 import com.ideffix.green.tesla.ing.tests.Tester;
 import org.junit.jupiter.api.Test;
 

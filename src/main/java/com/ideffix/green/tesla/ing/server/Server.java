@@ -8,8 +8,8 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private HttpServer server;
-    private String hostname;
-    private int port;
+    private final String hostname;
+    private final int port;
 
     private Server(String hostname, int port) throws IOException {
         this.hostname = hostname;
@@ -19,7 +19,8 @@ public class Server {
 
     private void init() throws IOException {
         server = HttpServer.create(new InetSocketAddress(hostname, port), 0);
-        server.setExecutor(Executors.newFixedThreadPool(10));
+        int availableProcessors = Runtime.getRuntime().availableProcessors();
+        server.setExecutor(Executors.newFixedThreadPool(availableProcessors));
     }
 
     public static Server from(String hostname, int port) {
