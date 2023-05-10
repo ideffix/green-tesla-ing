@@ -36,7 +36,7 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
         };
     }
 
-    public void add(T element) {
+    public Node<T> add(T element) {
         Node<T> currentLast = tail.prev;
         Node<T> currentSkippableLast = tail.skippablePrev;
         Node<T> node = new Node<>(element);
@@ -49,6 +49,8 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
         node.skippablePrev = currentSkippableLast;
         tail.prev = node;
         tail.skippablePrev = node;
+
+        return node;
     }
 
     public List<T> toList() {
@@ -74,11 +76,11 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
     }
 
     static class Node<T> {
-        Node<T> next;
-        Node<T> prev;
-        Node<T> skippableNext;
-        Node<T> skippablePrev;
-        T value;
+        private Node<T> next;
+        private Node<T> prev;
+        private Node<T> skippableNext;
+        private Node<T> skippablePrev;
+        private T value;
 
         Node() {
         }
@@ -90,6 +92,10 @@ public class SkippableLinkedList<T> implements Iterable<SkippableLinkedList.Node
         public void skip() {
             skippablePrev.skippableNext = skippableNext;
             skippableNext.skippablePrev = skippablePrev;
+        }
+
+        public T getValue() {
+            return value;
         }
     }
 }

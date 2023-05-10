@@ -32,7 +32,7 @@ class SkippableLinkedListTest {
 
         int expected = 1;
         for (var node : l) {
-            assertEquals(expected, node.value);
+            assertEquals(expected, node.getValue());
             expected++;
         }
     }
@@ -71,7 +71,7 @@ class SkippableLinkedListTest {
         l.add(3);
 
         for (var node : l) {
-            if (node.value == 1) {
+            if (node.getValue() == 1) {
                 node.skip();
                 break;
             }
@@ -91,7 +91,7 @@ class SkippableLinkedListTest {
         l.add(3);
 
         for (var node : l) {
-            if (node.value == 2) {
+            if (node.getValue() == 2) {
                 node.skip();
                 break;
             }
@@ -111,7 +111,7 @@ class SkippableLinkedListTest {
         l.add(3);
 
         for (var node : l) {
-            if (node.value == 3) {
+            if (node.getValue() == 3) {
                 node.skip();
                 break;
             }

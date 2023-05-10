@@ -1,0 +1,56 @@
+package com.ideffix.green.tesla.ing.onlinegame;
+
+import java.util.*;
+
+public class OnlineGameSkippableService {
+
+    public List<List<Clan>> calculateOrder(Players players) {
+        players.clans().sort(Clan::compareTo);
+        SkippableLinkedList<List<Clan>> result = new SkippableLinkedList<>();
+
+        if (players.clans().size() == 0) {
+            return new ArrayList<>();
+        }
+
+        Map<List<Clan>, Integer> groupCountMap = new HashMap<>();
+        result.add(new ArrayList<>());
+
+        for (Clan clan : players.clans()) {
+            var optionalNode = findFittingGroupNode(result, groupCountMap, clan, players.groupCount());
+            SkippableLinkedList.Node<List<Clan>> node;
+            if (optionalNode.isPresent()) {
+                // Clan can be added to an existing group
+                node = optionalNode.get();
+                List<Clan> group = node.getValue();
+                int newGroupCount = groupCountMap.getOrDefault(group, 0) + clan.numberOfPlayers();
+                groupCountMap.put(group, newGroupCount);
+                group.add(clan);
+            } else {
+                // Cannot add current clan to an existing groups - create new one.
+                List<Clan> group = new ArrayList<>();
+                group.add(clan);
+                groupCountMap.put(group, clan.numberOfPlayers());
+                node = result.add(group);
+            }
+            int groupCount = groupCountMap.getOrDefault(node.getValue(), 0) + clan.numberOfPlayers();
+            // group is full, no need to iterate over it as it cannot get more clans
+            if (groupCount == players.groupCount()) {
+                node.skip();
+            }
+        }
+
+        return result.toList();
+    }
+
+    private Optional<SkippableLinkedList.Node<List<Clan>>> findFittingGroupNode(SkippableLinkedList<List<Clan>> groupsSoFar, Map<List<Clan>, Integer> groupCountMap, Clan clan, int groupCount) {
+        for (SkippableLinkedList.Node<List<Clan>> group : groupsSoFar) {
+            int playersInGroup = groupCountMap.getOrDefault(group.getValue(), 0);
+            int playersWithCurrentClan = playersInGroup + clan.numberOfPlayers();
+            boolean canClanFitIntoGroup = playersWithCurrentClan <= groupCount;
+            if (canClanFitIntoGroup) {
+                return Optional.of(group);
+            }
+        }
+        return Optional.empty();
+    }
+}

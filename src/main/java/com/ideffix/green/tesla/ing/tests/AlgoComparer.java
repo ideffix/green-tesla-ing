@@ -24,6 +24,8 @@ public class AlgoComparer {
         printBetterResult(stats1.getAverage() < stats2.getAverage(), firstName, secondName, "average time", (int) Math.abs(stats1.getAverage() - stats2.getAverage()));
         printBetterResult(stats1.getMin() < stats2.getMin(), firstName, secondName, "min time", (int) Math.abs(stats1.getMin() - stats2.getMin()));
         printBetterResult(stats1.getMax() < stats2.getMax(), firstName, secondName, "max time", (int) Math.abs(stats1.getMax() - stats2.getMax()));
+
+
     }
 
     private static void printBetterResult(boolean firstIsBetter, String name1, String name2, String desc, int by) {

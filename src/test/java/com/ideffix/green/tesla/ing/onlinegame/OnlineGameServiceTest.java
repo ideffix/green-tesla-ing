@@ -14,13 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class OnlineGameServiceTest {
     private final OnlineGameService onlineGameService = new OnlineGameService();
+    private final OnlineGameSkippableService skippableService = new OnlineGameSkippableService();
 
     @Test
     public void example1() throws IOException {
         Players input = Json.fileToObject("src/test/resources/onlinegame/example_request.json",  new TypeReference<>(){});
         List<List<Clan>> expected = Json.fileToObject("src/test/resources/onlinegame/example_response.json", new TypeReference<>(){});
 
-        List<List<Clan>> output = onlineGameService.calculateOrder(input);
+        List<List<Clan>> output = skippableService.calculateOrder(input);
 
         assertArrayEquals(expected.toArray(), output.toArray());
     }
@@ -36,10 +37,10 @@ class OnlineGameServiceTest {
     @Test
     public void compareTest() {
         AlgoComparer.compare(
-                "test1",
+                "normal",
                 onlineGameService::calculateOrder,
-                "test2",
-                onlineGameService::calculateOrder,
+                "skippable",
+                skippableService::calculateOrder,
                 () -> InputDataGenerator.generate(1000, 20_000, new Range(1, 1000), new Range(1, 100_00)),
                 10);
     }
