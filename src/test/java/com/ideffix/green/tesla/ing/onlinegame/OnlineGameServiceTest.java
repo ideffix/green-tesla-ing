@@ -1,6 +1,7 @@
 package com.ideffix.green.tesla.ing.onlinegame;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.ideffix.green.tesla.ing.tests.AlgoComparer;
 import com.ideffix.green.tesla.ing.tests.Json;
 import com.ideffix.green.tesla.ing.tests.Range;
 import com.ideffix.green.tesla.ing.tests.Tester;
@@ -30,6 +31,17 @@ class OnlineGameServiceTest {
 
         Tester tester = new Tester(() -> onlineGameService.calculateOrder(input), 10);
         tester.run(/* withPrint=*/true);
+    }
+
+    @Test
+    public void compareTest() {
+        AlgoComparer.compare(
+                "test1",
+                onlineGameService::calculateOrder,
+                "test2",
+                onlineGameService::calculateOrder,
+                () -> InputDataGenerator.generate(1000, 20_000, new Range(1, 1000), new Range(1, 100_00)),
+                10);
     }
 
 }
